@@ -24,6 +24,14 @@ def check_user(message):
     else:
         return False
 
+def reply_keyboard(message):
+    markup = telebot.types.ReplyKeyboardMarkup(row_width=2)
+    names = team_list.names
+    itembtn1 = telebot.types.KeyboardButton(names[0])
+    itembtn2 = telebot.types.KeyboardButton(names[1])
+    itembtn3 = telebot.types.KeyboardButton(names[2])
+    markup.add(itembtn1, itembtn2, itembtn3)
+    bot.send_message(message.chat.id, "Choose the team", reply_markup=markup)
 
 @bot.message_handler(commands=["start"])
 def start_message(message):
@@ -51,20 +59,10 @@ def id_print(message):
 @bot.message_handler(commands=['change'], func=lambda m: check_user(prev_message))
 def change(message):
     user = message.from_user
-    markup = telebot.types.ReplyKeyboardMarkup(row_width=2)
-    names = team_list.names
-    itembtn1 = telebot.types.KeyboardButton(names[0])
-    itembtn2 = telebot.types.KeyboardButton(names[1])
-    itembtn3 = telebot.types.KeyboardButton(names[2])
-    markup.add(itembtn1, itembtn2, itembtn3)
-    bot.send_message(message.chat.id, "Choose the team", reply_markup=markup)
+    reply_keyboard(message)
     promote(user.id, CHAT_ID)
     global prev_message
     prev_message = message
-    '''team_name = message.text.replace("/change ","")
-    result = bot.set_chat_administrator_custom_title(CHAT_ID, user.id, team_name)
-    bot.send_message(CHAT_ID, user.username + " changes title to " + team_name)
-    print("change title:", result)'''
 
 
 @bot.message_handler(func=lambda m: check_user(prev_message))
